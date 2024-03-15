@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Online</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <!-- Incluindo a variável datasIndisponiveis -->
+    <script>
+        let datasIndisponiveis = {{ datas_indisponiveis|tojson|safe }};
+    </script>
+    
+</head>
+<body>
+    <h1 style="text-align: center;">Agenda Marco Flores</h1>
+
+    <div class="container">
+        <h2>Compromissos</h2>
+
+        <button class="novo-compromisso-btn" onclick="abrirModalNovoCompromisso()">Novo Compromisso</button>
+
+        <div class="compromissos-grid">
+            {% for compromisso in compromissos %}
+                <div class="compromisso-card">
+                    <h3>{{ compromisso.titulo }}</h3>
+                    <p>Data: {{ compromisso.data_hora_inicio }}</p>
+                    <p>Horário: {{ compromisso.hora_inicio }} às {{ compromisso.hora_fim }}</p>
+                    <p>Assunto: {{ compromisso.assunto }}</p>
+                    <p>Projeto: {{ compromisso.projeto }}</p>
+                    <p>Participante: {{ compromisso.participante }}</p>
+                    <p>Whatsapp do Participante: {{ compromisso.whatsapp_cliente }}</p>
+                    <div class="botoes">
+                        <a class="editar-link" href="javascript:void(0);" onclick="abrirModalEditarCompromisso('{{ compromisso.id }}', '{{ compromisso.titulo }}', '{{ compromisso.data_hora_inicio_editar }}', '{{ compromisso.data_hora_fim_editar }}', '{{ compromisso.assunto }}', '{{ compromisso.projeto }}', '{{ compromisso.participante }}', '{{ compromisso.whatsapp_cliente }}', {{ compromisso.nao_notificar_checked|lower }})">
+                            <img src="{{ url_for('static', filename='edit-icon.svg') }}" alt="Editar" class="icon" style="width: 15px; height: 15px;"> Editar
+                        </a>
+                        <a class="excluir-link" href="/excluir_compromisso/{{ compromisso.id }}">
+                            <img src="{{ url_for('static', filename='trash-icon.svg') }}" alt="Exluir" class="icon" style="width: 15px; height: 15px;"> Excluir
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        
+        
+        <button class="novo-compromisso-btn" onclick="abrirModalNovoCompromisso()">Novo Compromisso</button>
+        
+        <!-- Modal de novo compromisso -->
+        <div id="modalNovoCompromisso" class="modal">
+            <div class="modal-content">
+                <span class="fechar" onclick="fecharModalNovoCompromisso()">&times;</span>
+                <h2>Novo Compromisso</h2>
+                <form id="formNovoCompromisso" action="/inserir_compromisso" method="post">
+                    <label for="titulo">Título do compromisso:</label>
+                    <input type="text" id="titulo" name="titulo" required><br>
+            
+                    <label for="data_hora_inicio">Data e Hora de Início:</label>
+                    <input type="datetime-local" id="data_hora_inicio" name="data_hora_inicio" required><br>
+            
+                    <label for="data_hora_fim">Hora de Fim:</label>
+                    <input type="time" id="data_hora_fim" name="data_hora_fim" required><br>
+                    <input type="hidden" id="data_hora_fim_completa" name="data_hora_fim_completa">
+
+
+                    <label for="assunto">Assunto da Reunião:</label>
+                    <input type="text" id="assunto" name="assunto" required><br>
+            
+                    <label for="projeto">Projeto:</label>
+                    <select id="projeto" name="projeto" required>
+                        {% for projeto in projetos_distintos %}
+                            <option value="{{ projeto }}">{{ projeto }}</option>
+                        {% endfor %}
+                    </select><br>
+
+
+                    <label for="participante">Participante:</label>
+                    <input type="text" id="participante" name="participante" required><br>
+
+                    <label for="whatsapp_cliente">Whatsapp do Participante:</label>
+                    <input type="text" id="whatsapp_cliente" name="whatsapp_cliente" required><br>
+                    <input type="checkbox" id="nao_notificar" name="nao_notificar">
+                    <label for="nao_notificar">Não Notificar</label>
+            
+                    <button type="submit">Inserir</button>
+                </form>
+            </div>
+        </div>
+
+
+                <!-- Modal de edição de compromisso -->
+        <div id="modalEditarCompromisso" class="modal">
+            <div class="modal-content">
+                <span class="fechar" onclick="fecharModalEditarCompromisso()">&times;</span>
+                <h2>Editar Compromisso</h2>
+                <form id="formEditarCompromisso" action="/salvar_edicao" method="post">
+                    <input type="hidden" id="compromissoId" name="compromissoId">
+                    <label for="tituloEditar">Título do compromisso:</label>
+                    <input type="text" id="tituloEditar" name="tituloEditar" required><br>
+            
+                    <label for="data_hora_inicioEditar">Data e Hora de Início:</label>
+                    <input type="datetime-local" id="data_hora_inicioEditar" name="data_hora_inicioEditar" required><br>
+            
+                    <label for="data_hora_fimEditar">Hora de Fim:</label>
+                    <input type="time" id="data_hora_fimEditar" name="data_hora_fimEditar" required><br>
+
+                    <input type="hidden" id="data_hora_fim_completaEditar" name="data_hora_fim_completaEditar">
+
+            
+                    <label for="assuntoEditar">Assunto da Reunião:</label>
+                    <input type="text" id="assuntoEditar" name="assuntoEditar" required><br>
+            
+                    <label for="projetoEditar">Projeto:</label>
+                    <select id="projetoEditar" name="projetoEditar" required>
+                        {% for projeto in projetos_distintos %}
+                            <option value="{{ projeto }}" {% if projeto == compromissos.projeto %}selected{% endif %}>{{ projeto }}</option>
+                        {% endfor %}
+                    </select><br>
+
+
+                    <label for="participanteEditar">Participante:</label>
+                    <input type="text" id="participanteEditar" name="participanteEditar" required><br>
+
+                    <label for="whatsapp_clienteEditar">Whatsapp do Participante:</label>
+                    <input type="text" id="whatsapp_clienteEditar" name="whatsapp_clienteEditar" required><br>
+                    <input type="checkbox" id="nao_notificarEditar" name="nao_notificarEditar" {% if compromissos.nao_notificar_checked %}checked{% endif %}>
+                    <label for="nao_notificarEditar">Não Notificar</label>
+            
+                    <button type="submit">Salvar Edição</button>
+                </form>
+            </div>
+        </div>
+
+
+
+
+        
+        
+        
+        <script>
+            const modalNovoCompromisso = document.getElementById('modalNovoCompromisso');
+            const modalEditarCompromisso = document.getElementById('modalEditarCompromisso');
+
+            //const formNovoCompromisso = document.getElementById('formNovoCompromisso');
+            
+
+
+            function abrirModalNovoCompromisso() {
+                modalNovoCompromisso.style.display = 'block';
+            }
+            
+            function fecharModalNovoCompromisso() {
+                modalNovoCompromisso.style.display = 'none';
+            }
+
+            function abrirModalEditarCompromisso(id, titulo, data_hora_inicio, data_hora_fim, assunto, projeto, participante, whatsapp_cliente, checkbox_check) {
+                document.getElementById('compromissoId').value = id;
+                document.getElementById('tituloEditar').value = titulo;
+                document.getElementById('data_hora_inicioEditar').value = data_hora_inicio;
+
+                // Aqui assumimos que data_hora_fim é uma string no formato 'YYYY-MM-DDTHH:MM'
+                var horaMinuto = data_hora_fim.split('T')[1]; // Isso vai extrair 'HH:MM'
+                document.getElementById('data_hora_fimEditar').value = horaMinuto;
+                
+                document.getElementById('assuntoEditar').value = assunto;
+                document.getElementById('projetoEditar').value = projeto;
+                document.getElementById('participanteEditar').value = participante;
+                document.getElementById('whatsapp_clienteEditar').value = whatsapp_cliente;
+                document.getElementById('nao_notificarEditar').checked = checkbox_check;
+
+                const whatsappField = document.getElementById("whatsapp_clienteEditar");
+
+                if (checkbox_check) {
+                    whatsappField.setAttribute("disabled", "disabled");
+                    whatsappField.removeAttribute("required");
+                } else {
+                    whatsappField.removeAttribute("disabled");
+                    whatsappField.setAttribute("required", "required");
+                }
+
+
+
+
+
+                modalEditarCompromisso.style.display = 'block';
+            }
+
+            
+            function fecharModalEditarCompromisso() {
+                modalEditarCompromisso.style.display = 'none';
+            }
+
+
+            
+            window.onclick = function(event) {
+                if (event.target === modalNovoCompromisso) {
+                    fecharModalNovoCompromisso();
+                } else if (event.target === modalEditarCompromisso) {
+                    fecharModalEditarCompromisso();
+                }
+            };
+
+            $(document).ready(function() {
+                $('#whatsapp_cliente').mask('+55 (00) 00000-0000');
+                $('#whatsapp_clienteEditar').mask('+55 (00) 00000-0000');
+
+                function checarDataHoraIndisponivel(dataHora) {
+                    for (let i = 0; i < datasIndisponiveis.length; i++) {
+                        if (dataHora >= datasIndisponiveis[i].inicio && dataHora <= datasIndisponiveis[i].fim) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                $('#data_hora_inicio, #data_hora_fim').on('change', function(event) {
+                    const dataHoraSelecionada = event.target.value;
+                    if (checarDataHoraIndisponivel(dataHoraSelecionada)) {
+                        alert("Esta data e hora já estão agendadas. Por favor, escolha outro horário.");
+                        $(event.target).val('');  // Limpa o input
+                    }
+                });
+
+                // Atualiza o valor mínimo de data_hora_fim quando data_hora_inicio é alterado
+                $('#data_hora_inicio').on('change', function() {
+                    const inicio = new Date($(this).val());//$(this).val();
+                    const minTime = inicio.toTimeString().split(' ')[0].substr(0, 5);
+                    $('#data_hora_fim').attr('min', minTime);
+                });
+
+                // Verifica se data_hora_fim é menor que data_hora_inicio
+                $('#data_hora_fim').on('change', function() {
+                    const horaFim = $(this).val();
+                    const dataInicio = $('#data_hora_inicio').val().split('T')[0];
+                    const dataHoraFim = `${dataInicio}T${horaFim}`;
+
+                    const inicio = new Date($('#data_hora_inicio').val());
+                    const inicioTime = inicio.toTimeString().split(' ')[0].substr(0, 5);
+                    
+                    if (horaFim < inicioTime) {
+                        alert('A hora de fim não pode ser menor que a hora de início.');
+                        $(this).val('');  // Limpa o input
+                    } else {
+                        $('#data_hora_fim_completa').val(dataHoraFim); // Atualiza o valor do campo oculto
+                    }
+                });
+
+                // Verifica se data_hora_fimEditar é menor que data_hora_inicioEditar
+                $('#data_hora_fimEditar').on('change', function() {
+                    const horaFim = $(this).val();
+                    const dataInicio = $('#data_hora_inicioEditar').val().split('T')[0];
+                    const dataHoraFim = `${dataInicio}T${horaFim}`;
+
+                    const inicio = new Date($('#data_hora_inicioEditar').val());
+                    const inicioTime = inicio.toTimeString().split(' ')[0].substr(0, 5);
+                    
+                    if (horaFim < inicioTime) {
+                        alert('A hora de fim não pode ser menor que a hora de início.');
+                        $(this).val('');  // Limpa o input
+                    } else {
+                        $('#data_hora_fim_completaEditar').val(dataHoraFim); // Atualiza o valor do campo oculto
+                    }
+                });
+            });
+
+            // Adicionando a função para atualizar a data mínima
+            function updateMinDate(inputElementId) {
+                let now = new Date();
+                let year = now.getFullYear();
+                let month = String(now.getMonth() + 1).padStart(2, '0');
+                let day = String(now.getDate()).padStart(2, '0');
+                let currentDate = `${year}-${month}-${day}T00:00`;
+
+                let inputElement = document.getElementById(inputElementId);
+                let selectedDateTime = inputElement.value;
+                let selectedDate = selectedDateTime.split('T')[0];
+
+                if (selectedDate < currentDate.split('T')[0]) {
+                    alert('A data não pode ser anterior à data atual.');
+                    inputElement.value = '';
+                }
+            }
+
+            // Adiciona o evento para o campo 'data_hora_inicio'
+            document.getElementById('data_hora_inicio').addEventListener('change', function() { updateMinDate('data_hora_inicio'); });
+            document.getElementById('data_hora_inicioEditar').addEventListener('change', function() { updateMinDate('data_hora_inicioEditar'); });
+
+            // Adicione isso no seu script
+            document.getElementById("nao_notificar").addEventListener("change", function() {
+                const whatsappField = document.getElementById("whatsapp_cliente");
+                if (this.checked) {
+                    whatsappField.setAttribute("disabled", "disabled");
+                    whatsappField.removeAttribute("required");
+                } else {
+                    whatsappField.removeAttribute("disabled");
+                    whatsappField.setAttribute("required", "required");
+                }
+            });
+
+            // Adicione isso no seu script
+            document.getElementById("nao_notificarEditar").addEventListener("change", function() {
+                const whatsappField = document.getElementById("whatsapp_clienteEditar");
+                if (this.checked) {
+                    whatsappField.setAttribute("disabled", "disabled");
+                    whatsappField.removeAttribute("required");
+                } else {
+                    whatsappField.removeAttribute("disabled");
+                    whatsappField.setAttribute("required", "required");
+                }
+            });
+
+
+
+        </script>
+    </div>
+</body>
+</html>

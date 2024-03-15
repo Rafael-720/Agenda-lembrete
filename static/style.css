@@ -1,0 +1,162 @@
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    padding: 10px;
+    border-bottom: 1px solid #cccccc;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #000000;
+}
+
+input[type="text"],
+input[type="datetime-local"] {
+    width: 93%;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+button {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #112253;
+}
+
+@media screen and (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    input[type="text"],
+    input[type="datetime-local"] {
+        padding: 8px;
+    }
+
+    button {
+        padding: 10px 20px;
+    }
+}
+
+
+/* Estilos do botão de novo compromisso */
+.novo-compromisso-btn {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.novo-compromisso-btn:hover {
+    background-color: #112253;
+}
+
+
+/* Estilos para os compromissos */
+.compromissos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.compromisso-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+}
+
+.compromisso-card h3 {
+    margin-top: 0;
+}
+
+.botoes a {
+    margin-right: 10px;
+    color: #000000;
+    text-decoration: none;
+}
+
+.botoes a:hover {
+    text-decoration: underline;
+}
+button:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.card {
+    border-radius: 8px; /* bordas arredondadas */
+    background-color: #3C3F41; /* fundo cinza do card */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* sombra suave */
+    transition: 0.3s; /* transição suave para efeitos de hover */
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3); /* sombra mais destacada no hover */
+    transform: translateY(-4px); /* efeito de 'subida' no hover */
+}
+
+.compromisso-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* suavizando as transições de sombra e transformação */
+    border-radius: 8px; /* bordas arredondadas para um visual moderno */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* sombra inicial suave */
+    margin: 8px; /* espaço entre os cards */
+    padding: 16px; /* espaço interno dos cards */
+}
+
+.compromisso-card:hover {
+    transform: translateY(-5px); /* eleva o card ao passar o mouse */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3); /* sombra mais profunda no hover */
+}
