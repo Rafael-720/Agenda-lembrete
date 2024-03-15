@@ -2,6 +2,24 @@
 
 Plataforma para gerenciamento de compromissos com notificações via WhatsApp.
 
+
+## Screenshots
+
+Aqui estão algumas capturas de tela da Agenda Online:
+
+<p align="center">
+  <img src="https://github.com/Rafael-720/Agenda-lembrete/blob/main/screenshots/1.png?raw=true" width="400" title="Interface da Agenda" alt="Captura da Agenda">
+  <img src="https://github.com/Rafael-720/Agenda-lembrete/blob/main/screenshots/3.png?raw=true" width="400" title="Detalhe do Compromisso" alt="Detalhe do Compromisso">
+</p>
+
+<p align="center">
+  <img src="https://github.com/Rafael-720/Agenda-lembrete/blob/main/screenshots/2.png?raw=true" width="400" title="Interface da Agenda" alt="Captura da Agenda">
+  <img src="https://github.com/Rafael-720/Agenda-lembrete/blob/main/screenshots/4.png?raw=true" width="400" title="Detalhe do Compromisso" alt="Detalhe do Compromisso">
+</p>
+
+
+
+
 Este projeto é um sistema de agendamento online que permite aos usuários marcar, visualizar, editar e excluir compromissos. Utiliza **Flask** como framework backend em **Python**, **PostgreSQL** para gerenciamento de banco de dados e **JQuery** para melhor interatividade no frontend. As notificações dos compromissos são enviadas via WhatsApp utilizando a API do WhatsApp Business.
 
 ## 🛠 Ferramentas e Versões Utilizadas
